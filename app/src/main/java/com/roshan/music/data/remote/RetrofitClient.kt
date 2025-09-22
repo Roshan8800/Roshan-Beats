@@ -35,4 +35,15 @@ object RetrofitClient {
             .build()
             .create(OpenRouterApiService::class.java)
     }
+
+    private const val JAMENDO_BASE_URL = "https://api.jamendo.com/v3.0/"
+
+    val jamendoApiService: JamendoApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(JAMENDO_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(JamendoApiService::class.java)
+    }
 }

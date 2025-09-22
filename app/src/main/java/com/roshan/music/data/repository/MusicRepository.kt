@@ -6,14 +6,20 @@ import com.roshan.music.data.remote.OpenRouterApiService
 import com.roshan.music.data.remote.RetrofitClient
 import com.roshan.music.data.remote.dto.Content
 import com.roshan.music.data.remote.dto.GeminiRequest
+import com.roshan.music.data.remote.JamendoApiService
 import com.roshan.music.data.remote.dto.Message
 import com.roshan.music.data.remote.dto.OpenRouterRequest
+import com.roshan.music.data.remote.dto.AlbumDto
+import com.roshan.music.data.database.AppDatabase
+import com.roshan.music.data.remote.dto.ArtistDto
 import com.roshan.music.data.remote.dto.Part
+import com.roshan.music.data.remote.dto.TrackDto
 
-class MusicRepository {
+class MusicRepository(private val database: AppDatabase) {
 
     private val geminiApiService: GeminiApiService = RetrofitClient.geminiApiService
     private val openRouterApiService: OpenRouterApiService = RetrofitClient.openRouterApiService
+    private val jamendoApiService: JamendoApiService = RetrofitClient.jamendoApiService
 
     suspend fun getSongRecommendations(prompt: String): String {
         val request = GeminiRequest(
@@ -38,5 +44,59 @@ class MusicRepository {
         )
         val response = openRouterApiService.getChatCompletions("Bearer ${BuildConfig.DEEPSEEK_V3_1_API_KEY}", request)
         return response.choices.first().message.content
+    }
+
+    suspend fun searchTracks(query: String): List<TrackDto> {
+        val response = jamendoApiService.searchTracks(
+            clientId = BuildConfig.JAMENDO_CLIENT_ID,
+            searchQuery = query
+        )
+        return response.results
+    }
+
+    suspend fun getTrendingAlbums(): List<AlbumDto> {
+        val response = jamendoApiService.getAlbums(
+            clientId = BuildConfig.JAMENDO_CLIENT_ID,
+            order = "popularity_week"
+        )
+        return response.results
+    }
+
+    suspend fun getAlbumsByGenre(genre: String): List<AlbumDto> {
+        val response = jamendoApiService.getAlbums(
+            clientId = BuildConfig.JAMENDO_CLIENT_ID,
+            order = "popularity_total",
+            tags = genre
+        )
+        return response.results
+    }
+
+    suspend fun searchArtists(query: String): List<ArtistDto> {
+        val response = jamendoApiService.searchArtists(
+            clientId = BuildConfig.JAMENDO_CLIENT_ID,
+            searchQuery = query
+        )
+        return response.results
+    }
+
+    suspend fun searchAlbums(query: String): List<AlbumDto> {
+        val response = jamendoApiService.searchAlbums(
+            clientId = BuildConfig.JAMENDO_CLIENT_ID,
+            searchQuery = query
+        )
+        return response.results
+    }
+
+    // Local database operations
+    fun getPlaylists() = database.playlistDao().getAllPlaylistsWithTracks()
+
+    suspend fun createPlaylist(playlist: com.roshan.music.data.database.PlaylistEntity) {
+        database.playlistDao().insertPlaylist(playlist)
+    }
+
+    suspend fun addTrackToPlaylist(playlistId: Long, trackId: String) {
+        database.playlistDao().insertTrackIntoPlaylist(
+            com.roshan.music.data.database.PlaylistTrackCrossRef(playlistId, trackId)
+        )
     }
 }
