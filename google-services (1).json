@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "268758909157",
+    "firebase_url": "https://roshan-beats-default-rtdb.firebaseio.com",
+    "project_id": "roshan-beats",
+    "storage_bucket": "roshan-beats.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268758909157:android:c722743b1b8209508f540c",
+        "android_client_info": {
+          "package_name": "Com.roshan.music"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "268758909157-t61ubean1qnmjqak03vc0nvjcjouereu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvLk8dOg4Co50dVGMxyztCGKuTKQ2foLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "268758909157-t61ubean1qnmjqak03vc0nvjcjouereu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
